@@ -1,10 +1,11 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { PRODUCTS } from '../data/products'
 import { ICONS, rupiah, discount, waLink, productImages } from '../utils/helper'
 import { useCartStore } from '../stores/cart'
 import ImageSlider from '../components/ImageSlider.vue'
+import { flyToCart } from '../utils/flyToCart'
 
 // useRoute() memberi akses ke URL yang sedang dibuka.
 // Untuk /produk/5, route.params.id bernilai "5" (selalu berupa teks), jadi diubah ke angka.
@@ -25,6 +26,13 @@ const stockText = computed(() => {
   if (s <= 5) return 'Sisa ' + s + ' lagi'
   return 'Stok tersedia (' + s + ')'
 })
+
+const media = ref(null)
+
+const addToCart = () => {
+  cart.add(product.value)
+  flyToCart(media.value)
+}
 </script>
 
 <template>
@@ -32,11 +40,12 @@ const stockText = computed(() => {
     <RouterLink to="/" class="back">← Kembali ke etalase</RouterLink>
 
     <div v-if="product" class="layout">
-      <ImageSlider v-if="photos.length" :images="photos" :alt="product.name" />
-      <div v-else class="tile" :style="{ background: 'var(--t' + product.tone + ')' }">
-        <svg viewBox="0 0 64 64" aria-hidden="true" v-html="ICONS[product.cat]"></svg>
+      <div class="media" ref="media">
+        <ImageSlider v-if="photos.length" :images="photos" :alt="product.name" />
+        <div v-else class="tile" :style="{ background: 'var(--t' + product.tone + ')' }">
+          <svg viewBox="0 0 64 64" aria-hidden="true" v-html="ICONS[product.cat]"></svg>
+        </div>
       </div>
-
       <div class="info">
         <span class="cat">{{ product.cat }}</span>
         <h1>{{ product.name }}</h1>
@@ -57,7 +66,7 @@ const stockText = computed(() => {
               type="button"
               class="btn"
               :disabled="inCart >= product.stock"
-              @click="cart.add(product)"
+              @click="addToCart"
             >
               <i class="bi bi-plus-circle" aria-hidden="true"></i>
               {{ inCart ? 'Tambah lagi (' + inCart + ' di keranjang)' : 'Tambah ke keranjang' }}
@@ -195,10 +204,6 @@ const stockText = computed(() => {
 .actions .btn {
   margin-top: 0;
 }
-
-/* .btn {
-  background: var(--accent);
-} */
 
 .btn.secondary {
   border: 1px solid var(--accent-ink);

@@ -1,7 +1,8 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { ICONS, rupiah, discount, productImages } from '../utils/helper'
 import { useCartStore } from '../stores/cart'
+import { flyToCart } from '../utils/flyToCart'
 
 // Props: data yang diterima komponen ini dari induknya (Dashboard.vue).
 const props = defineProps({
@@ -12,13 +13,20 @@ const props = defineProps({
 const cart = useCartStore()
 
 const photo = computed(() => productImages(props.product)[0])
+
+const tile = ref(null)
+
+const addToCart = () => {
+  cart.add(props.product)
+  flyToCart(tile.value)
+}
 </script>
 
 <template>
   <article class="card" :class="{ out: product.stock === 0 }">
     <RouterLink class="tile-link" :to="'/produk/' + product.id" tabindex="-1" aria-hidden="true">
       <!-- <div class="tile" :class="'t' + product.tone" v-on:click="$router.push('/produk/' + product.id)"> -->
-      <div class="tile" :class="'t' + product.tone">
+      <div class="tile" :class="'t' + product.tone" ref="tile">
         <img v-if="photo" class="photo" :src="photo" alt="" loading="lazy" />
         <svg v-else viewBox="0 0 64 64" aria-hidden="true" v-html="ICONS[product.cat]"></svg>
         <div class="badges" v-if="product.oldPrice || product.stock <= 5">
@@ -47,7 +55,7 @@ const photo = computed(() => productImages(props.product)[0])
         type="button"
         class="btn"
         :disabled="cart.qtyOf(product.id) >= product.stock"
-        @click="cart.add(product)"
+        @click="addToCart"
       >
         <i class="bi bi-plus-circle" aria-hidden="true"></i>
         {{

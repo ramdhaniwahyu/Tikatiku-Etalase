@@ -34,11 +34,14 @@ export const useCartStore = defineStore('cart', () => {
   // Action: fungsi yang mengubah state.
   const qtyOf = (id) => items.value.find((i) => i.id === id)?.qty ?? 0
 
+  const lastAdded = ref('')
+
   function add(product) {
     const line = items.value.find((i) => i.id === product.id)
     if (qtyOf(product.id) >= product.stock) return // tidak boleh melebihi stok
     if (line) line.qty++
     else items.value.push({ id: product.id, qty: 1 })
+    lastAdded.value = product.name + ' ditambahkan ke keranjang (' + qtyOf(product.id) + ')'
   }
 
   function setQty(id, qty) {
@@ -69,5 +72,5 @@ export const useCartStore = defineStore('cart', () => {
     { deep: true },
   )
 
-  return { items, lines, count, total, qtyOf, add, setQty, remove, clear }
+  return { items, lines, count, total, qtyOf, add, setQty, remove, clear, lastAdded }
 })

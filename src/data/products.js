@@ -91,7 +91,7 @@ export const PRODUCTS = [
     stock: 500,
     tone: 3,
     desc: 'Amplop vintage dengan design custom sesuai keinginan',
-    images:['amplop1-1.jpg', 'amplop1-2.jpg'],
+    images: ['amplop1-1.jpg', 'amplop1-2.jpg'],
   },
   {
     id: 10,
