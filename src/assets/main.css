@@ -1,0 +1,481 @@
+/*@import './base.css';*/
+
+/* =========================================================
+   main.css: gaya global Etalase Nusantara
+   Diimpor sekali di src/main.js, berlaku untuk seluruh aplikasi.
+   ========================================================= */
+
+/* ---------- 1. Token warna dan font (variabel CSS) ---------- */
+:root {
+  --bg: #fff4de;
+  --surface: #fffaf2;
+  --ink: #3a2a2e;
+  --muted: #7a6468;
+  --line: #ebd3b0;
+  --accent: #b23a5b;
+  --accent-ink: #ffffff;
+  --sale: #c2410c;
+  --warn: #8a5a00;
+  --t1: #ffced8;
+  --t2: #ffe8c4;
+  --t3: #ffdddd;
+  --t4: #fbd6c4;
+  --bw: #0b6e5f;
+  --tile-ink: #3a2a2e;
+  --shadow: 0 6px 18px rgb(58 42 46 / 0.14);
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+
+/* Mode gelap: hanya mengganti nilai variabel, komponen lain tidak perlu diubah. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #241a1d;
+    --surface: #2f2327;
+    --ink: #fff4de;
+    --muted: #d9c4bc;
+    --line: #4a383d;
+    --accent: #ffced8;
+    --accent-ink: #3a1a24;
+    --sale: #ffb48a;
+    --warn: #ffe8c4;
+    --t1: #4a2b34;
+    --t2: #4d3a2b;
+    --t3: #3f2a2e;
+    --t4: #4d2f2a;
+    --bw: #5fd0b8;
+    --tile-ink: #ffe8c4;
+    --shadow: 0 6px 18px rgb(0 0 0 / 0.45);
+    color-scheme: dark;
+  }
+}
+
+/* ---------- 2. Dasar halaman ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 8px 16px 40px;
+}
+
+.wrap {
+  max-width: 1120px;
+  margin-inline: auto;
+}
+
+:where(button, a, input, select):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Teks yang hanya terbaca oleh pembaca layar (untuk label input). */
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- 3. Header ---------- */
+header.top {
+  padding-block: 28px 20px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 8px;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(30px, 6vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  color: var(--muted);
+  max-width: 85ch;
+}
+
+/* ---------- 4. Toolbar: pencarian, urutan, kategori ---------- */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  padding-block: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.field {
+  flex: 1 1 220px;
+  min-width: 0;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
+select.field {
+  flex: 0 1 190px;
+}
+
+.field::placeholder {
+  color: var(--muted);
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  font: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.chip .n {
+  color: var(--muted);
+  margin-left: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.chip[aria-pressed='true'] .n {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.count {
+  margin: 18px 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- 5. Grid dan kartu produk ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 18px;
+  }
+}
+
+.card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tile {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  color: var(--tile-ink);
+}
+
+.tile svg {
+  width: 38%;
+  max-width: 96px;
+  height: auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.t1 {
+  background: var(--t1);
+}
+.t2 {
+  background: var(--t2);
+}
+.t3 {
+  background: var(--t3);
+}
+.t4 {
+  background: var(--t4);
+}
+
+.card.out .tile svg {
+  opacity: 0.4;
+}
+
+.badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.badge.sale {
+  color: var(--sale);
+}
+.badge.low {
+  color: var(--warn);
+}
+.badge.out {
+  color: var(--muted);
+}
+
+.body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.cat {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.25;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.desc {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin-top: 4px;
+}
+
+.price strong {
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+}
+
+.price s {
+  color: var(--muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.btn {
+  gap: 8px;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  transition: filter 0.15s;
+}
+
+.btn i {
+  font-size: 1.1em;
+}
+
+.btn:hover {
+  filter: brightness(1.08);
+}
+
+.btn[aria-disabled='true'] {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.body > .price + .btn {
+  margin-top: 10px;
+}
+
+/* ---------- 6. Keadaan kosong dan bagian bawah ---------- */
+.empty {
+  grid-column: 1 / -1;
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.empty button {
+  margin-top: 12px;
+  font: inherit;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.how {
+  margin-top: 44px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 6px;
+}
+
+.how h2 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  margin: 0;
+}
+
+.how p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 70ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* Tombol <button> memakai gaya .btn juga */
+button.btn {
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn.secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.search {
+  position: relative;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.search .field {
+  width: 100%;
+  padding-left: 14px;
+}
+
+/* Saat kolom kosong (placeholder tampil), beri ruang untuk ikon. */
+.search .field:placeholder-shown {
+  padding-left: 40px;
+}
+
+.search i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* Saat ada teks yang diketik, ikon disembunyikan. */
+.search .field:not(:placeholder-shown) + i {
+  display: none;
+}
